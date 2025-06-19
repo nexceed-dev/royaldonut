@@ -30,6 +30,7 @@
                             const item = document.createElement('div');
                             item.innerHTML = `
                                 <strong>${donut.name}</strong> - €${donut.price} - Seal: ${donut.seal_of_approval}/5
+                                <button onclick="editDonut(${donut.id}, '${donut.name}', ${donut.price}, ${donut.seal_of_approval})">Edit</button>
                             `;
                             list.appendChild(item);
                         });
@@ -56,6 +57,25 @@
                 form.reset();
                 loadDonuts();
             });
+        function editDonut(id, currentName, currentPrice, currentSeal) {
+            const name = prompt('New name:', currentName);
+            const price = prompt('New price:', currentPrice);
+            const seal = prompt('New seal (0–5):', currentSeal);
+
+            if (name && price && seal !== null) {
+                fetch(`/api/donuts/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        price: price,
+                        seal_of_approval: seal
+                    }),
+                }).then(() => loadDonuts());
+            }
+        }
+
+        loadDonuts();
     </script>
 </body>
 </html>
