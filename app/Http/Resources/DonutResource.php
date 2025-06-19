@@ -19,6 +19,7 @@ class DonutResource extends JsonResource
             'name' => $this->name,
             'price' => $this->price,
             'seal_of_approval' => $this->seal_of_approval,
+            'image' => $this->image,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
