@@ -30,6 +30,7 @@
                             const item = document.createElement('div');
                             item.innerHTML = `
                                 <strong>${donut.name}</strong> - €${donut.price} - Seal: ${donut.seal_of_approval}/5
+                                <button onclick="deleteDonut(${donut.id})">Delete</button>
                                 <button onclick="editDonut(${donut.id}, '${donut.name}', ${donut.price}, ${donut.seal_of_approval})">Edit</button>
                             `;
                             list.appendChild(item);
@@ -57,6 +58,14 @@
                 form.reset();
                 loadDonuts();
             });
+        });
+
+        function deleteDonut(id) {
+            fetch(`/api/donuts/${id}`, {
+                method: 'DELETE'
+            }).then(() => loadDonuts());
+        }
+
         function editDonut(id, currentName, currentPrice, currentSeal) {
             const name = prompt('New name:', currentName);
             const price = prompt('New price:', currentPrice);
