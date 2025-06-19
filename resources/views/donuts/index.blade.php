@@ -10,10 +10,11 @@
     <div id="donut-list">Loading...</div>
 
     <h2>Add Donut</h2>
-    <form id="add-donut-form">
+    <form id="add-donut-form" enctype="multipart/form-data">
         <input type="text" name="name" placeholder="Donut name" required>
         <input type="number" name="price" step="0.01" placeholder="Price" required>
         <input type="number" name="seal_of_approval" min="0" max="5" placeholder="Seal (0-5)" required>
+        <input type="file" name="image" accept="image/*">
         <button type="submit">Add</button>
     </form>
 
@@ -28,10 +29,15 @@
                     if (data.data && data.data.length) {
                         data.data.forEach(donut => {
                             const item = document.createElement('div');
+                            const imageHtml = donut.image
+                                ? `<img src="/${donut.image}" alt="${donut.name}" width="100"><br>`
+                                : '';
                             item.innerHTML = `
+                                ${imageHtml}
                                 <strong>${donut.name}</strong> - €${donut.price} - Seal: ${donut.seal_of_approval}/5
                                 <button onclick="deleteDonut(${donut.id})">Delete</button>
                                 <button onclick="editDonut(${donut.id}, '${donut.name}', ${donut.price}, ${donut.seal_of_approval})">Edit</button>
+                                <hr>
                             `;
                             list.appendChild(item);
                         });
@@ -44,16 +50,11 @@
         document.getElementById('add-donut-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const form = e.target;
-            const data = {
-                name: form.name.value,
-                price: form.price.value,
-                seal_of_approval: form.seal_of_approval.value,
-            };
+            const formData = new FormData(form);
 
             fetch('/api/donuts', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                body: formData,
             }).then(() => {
                 form.reset();
                 loadDonuts();
@@ -74,7 +75,9 @@
             if (name && price && seal !== null) {
                 fetch(`/api/donuts/${id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                     body: JSON.stringify({
                         name: name,
                         price: price,
