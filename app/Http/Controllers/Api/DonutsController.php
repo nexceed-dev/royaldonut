@@ -45,9 +45,11 @@ class DonutsController extends Controller
         ], 200);
     }
 
-    public function show()
+    public function show(Donut $donut)
     {
-
+        return response()->json([
+            'data' => new DonutResource($donut)
+        ], 200);
     }
 
     public function update()
