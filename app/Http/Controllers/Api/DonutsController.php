@@ -82,7 +82,12 @@ class DonutsController extends Controller
 
     public function destroy()
     {
+        $donut = Donut::findOrFail(request()->route('donut'));
+        $donut->delete();
 
+        return response()->json([
+            'message' => 'Donut deleted successfully'
+        ], 200);
     }
     
 }
