@@ -64,4 +64,18 @@ class DonutApiTest extends TestCase
         $response->assertJsonPath('data.0.seal_of_approval', 5);
         $response->assertJsonPath('data.1.seal_of_approval', 1);
     }
+
+    #[Test]
+    public function can_create_donut()
+    {
+        $response = $this->postJson('/api/donuts', [
+            'name' => 'Maple Delight',
+            'price' => 8.0,
+            'seal_of_approval' => 5,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonFragment(['name' => 'Maple Delight']);
+        $this->assertDatabaseHas('donuts', ['name' => 'Maple Delight']);
+    }
 }
