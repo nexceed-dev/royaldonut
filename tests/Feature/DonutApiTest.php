@@ -66,6 +66,22 @@ class DonutApiTest extends TestCase
     }
 
     #[Test]
+    public function can_fetch_single_donut()
+    {
+        $donut = Donut::create([
+            'name' => 'Chocolate Dream',
+            'price' => 8.0,
+            'seal_of_approval' => 5,
+        ]);
+
+        $response = $this->getJson("/api/donuts/{$donut->id}");
+        $response->assertStatus(200);
+        $response->assertJsonFragment(['name' => 'Chocolate Dream']);
+        $response->assertJsonFragment(['price' => 8.0]);
+        $response->assertJsonFragment(['seal_of_approval' => 5]);
+    }
+    
+    #[Test]
     public function can_create_donut()
     {
         $response = $this->postJson('/api/donuts', [
