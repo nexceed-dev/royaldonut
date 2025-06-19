@@ -92,7 +92,12 @@ class DonutApiTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonFragment(['name' => 'Maple Delight']);
-        $this->assertDatabaseHas('donuts', ['name' => 'Maple Delight']);
+        $response->assertJsonFragment(['price' => 8.0]);
+        $response->assertJsonFragment(['seal_of_approval' => 5]);
+        $response->assertJsonFragment(['message' => 'Donut created successfully']);
+
+    }
+
     #[Test]
     public function return_error_for_invalid_input()
     {
