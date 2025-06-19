@@ -52,10 +52,33 @@ class DonutsController extends Controller
         ], 200);
     }
 
-    public function update()
+    public function update(Request $request, Donut $donut)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'seal_of_approval' => 'required|integer|min:0|max:5',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Invalid input',
+                'error' => $validator->messages(),
+            ], 200);
+        }
+
+        $donut->update([
+            'name' => $request->input('name'),
+            'price' => $request->input('price'),
+            'seal_of_approval' => $request->input('seal_of_approval'),
+        ]);
+
+        return response()->json([
+            'data' => new DonutResource($donut),
+            'message' => 'Donut updated successfully'
+        ], 200);
 
     }
+
 
     public function destroy()
     {
