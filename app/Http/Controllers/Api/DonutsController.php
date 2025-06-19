@@ -11,17 +11,23 @@ use Illuminate\Support\Facades\Validator;
 
 class DonutsController extends Controller
 {
-    public function index()
+public function index(Request $request)
     {
-        $donuts = Donut::get();
+        $sort = $request->query('sort', 'name');
+        $order = $request->query('order', 'asc');
+        $sortColumn = $sort === 'approval' ? 'seal_of_approval' : 'name';
+
+        $donuts = Donut::orderBy($sortColumn, $order)->get();
+
         if ($donuts->count() > 0) {
             return DonutResource::collection($donuts);
-        }
-        else {
-            return response()->json(
-                ['message' => 'No donuts found'], 200);
+        } else {
+            return response()->json([
+                'message' => 'No donuts found'
+            ], 200);
         }
     }
+
 
     public function store(Request $request)
     {
