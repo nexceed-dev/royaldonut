@@ -93,5 +93,28 @@ class DonutApiTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonFragment(['name' => 'Maple Delight']);
         $this->assertDatabaseHas('donuts', ['name' => 'Maple Delight']);
+    #[Test]
+    public function return_error_for_invalid_input()
+    {
+        $response = $this->postJson('/api/donuts', [
+            'name' => '',
+            'price' => 'not_a_number',
+            'seal_of_approval' => '6',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'Invalid input',
+            'error' => [
+                'name' => ['The name field is required.'],
+                'price' => ['The price field must be a number.'],
+                'seal_of_approval' => ['The seal of approval field must not be greater than 5.'],
+            ],
+        ]);
+        $this->assertDatabaseMissing('donuts', ['name' => '']);
+        $this->assertDatabaseMissing('donuts', ['price' => 'not_a_number']);
+        $this->assertDatabaseMissing('donuts', ['seal_of_approval' => '6']);
+    }
+
     }
 }
