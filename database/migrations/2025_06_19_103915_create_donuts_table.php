@@ -9,7 +9,8 @@ return new class extends Migration {
     {
         Schema::create('donuts', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique(); 
+            $table->string('name')->unique();
+            $table->decimal('price', 4, 1);
             $table->tinyInteger('seal_of_approval')->unsigned(); 
             $table->timestamps();
         });
