@@ -43,8 +43,13 @@ public function index(Request $request)
             ], 200);
         }
 
-        $donut = Donut::create($validator->validated());
+        $data = $validator->validated();
 
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('donuts', 'public');
+        }
+
+        $donut = Donut::create($data);
         return response()->json([
             'data' => new DonutResource($donut),
             'message' => 'Donut created successfully'
@@ -64,6 +69,7 @@ public function index(Request $request)
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'seal_of_approval' => 'required|integer|min:0|max:5',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -72,11 +78,13 @@ public function index(Request $request)
             ], 200);
         }
 
-        $donut->update([
-            'name' => $request->input('name'),
-            'price' => $request->input('price'),
-            'seal_of_approval' => $request->input('seal_of_approval'),
-        ]);
+        $data = $validator->validated();
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('donuts', 'public');
+        }
+
+        $donut->update($data);
 
         return response()->json([
             'data' => new DonutResource($donut),
