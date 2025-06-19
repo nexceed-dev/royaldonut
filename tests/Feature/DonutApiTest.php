@@ -116,5 +116,21 @@ class DonutApiTest extends TestCase
         $this->assertDatabaseMissing('donuts', ['seal_of_approval' => '6']);
     }
 
+    #[Test]
+    public function can_delete_donut()
+    {
+        $donut = Donut::create([
+            'name' => 'Apple Cinnamon',
+            'price' => 7.5,
+            'seal_of_approval' => 1,
+        ]);
+
+        $response = $this->deleteJson("/api/donuts/{$donut->id}");
+        $response->assertStatus(200);
+        $response->assertJsonFragment(['message' => 'Donut deleted successfully']);
+        $this->assertDatabaseMissing('donuts', ['id' => $donut->id]);
+        $this->assertDatabaseMissing('donuts', ['name' => 'Apple Cinnamon']);
+        $this->assertDatabaseMissing('donuts', ['price' => 7.5]);
+        $this->assertDatabaseMissing('donuts', ['seal_of_approval' => 1]);
     }
 }
