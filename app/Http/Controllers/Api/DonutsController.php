@@ -32,7 +32,7 @@ class DonutsController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'All fields are mandatory',
+                'message' => 'Invalid input',
                 'error' => $validator->messages(),
             ], 200);
         }
